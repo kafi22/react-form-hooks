@@ -1,7 +1,7 @@
 import React from "react";
 
-import {useForm} from "react-hook-form"
-import {Stack, Typography} from "@mui/material"
+import {useForm, useFieldArray} from "react-hook-form"
+import {Box, Input, Stack, Typography} from "@mui/material"
 import axios from "axios"
 
 import {DevTool} from "@hookform/devtools"
@@ -22,14 +22,22 @@ const Youtubeforms = () => {
                     twitter : '',
                     facebook : ''
                 },
-                phoneNumbers : ["", ""]
+                phoneNumbers : ["", ""],
+                phoneNm : [{Number : ''}],
+                age : 0,
+                date : new Date()
 
             }
         }
      })
      const {register, control, handleSubmit, formState} = form;
 
-     const {errors} = formState
+     const {errors} = formState;
+
+    const {fields, append, remove} =  useFieldArray({
+        name : 'phoneNm',
+        control
+    })
 
      const formSubmit = (data) => {
 
@@ -105,6 +113,57 @@ const Youtubeforms = () => {
                     
                     <label htmlFor="proneNumber" id="PhoneNumber2">Personal Number</label>
                     <input type="text" id="phonenumber2_input" {...register('phoneNumbers.1')} />
+                </Stack>
+
+                <Stack>
+                    <label>List of phone numbers</label>
+                    <Box component='div'>
+                    {
+                        fields.map((filed, index) => {
+
+                            return (
+                                <Box component='div' key={filed.id}>
+                                    <Input type="text" {...register(`phoneNm.${index}.number`)} />
+                                    {
+                                    index > 0 && (
+                                        <Box>
+                                            <button type="button" onClick={() => remove(index)}>remove</button>
+                                        </Box>
+                                    )
+                                    }
+                                </Box>
+                            )
+
+                           
+
+                           
+                        })
+                    }
+                    <button  type="button" onClick={() => append({number : ''})}>Add number</button>
+                    </Box>
+                </Stack>
+                <Stack>
+                    
+                    <label htmlFor="age" id="ages">Age</label>
+                    <input type="number" id="age1" {...register('age', {
+                        valueAsNumber : true,
+                        required : {
+                            value : true,
+                            message : 'age is required'
+                        }
+                    }) } />
+                </Stack>
+
+                <Stack>
+                    
+                    <label htmlFor="date" id="date">Date of Birth</label>
+                    <input type="date" id="date" {...register('date', {
+                        valueAsDate : true,
+                        required : {
+                            value : true,
+                            message : 'date is required'
+                        }
+                    }) } />
                 </Stack>
 
                 <button type="submit">Submit</button>
