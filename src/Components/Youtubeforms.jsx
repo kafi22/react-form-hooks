@@ -2,13 +2,30 @@ import React from "react";
 
 import {useForm} from "react-hook-form"
 import {Stack, Typography} from "@mui/material"
+import axios from "axios"
 
 import {DevTool} from "@hookform/devtools"
 
 
 const Youtubeforms = () => {
 
-     const form  =  useForm()
+     const form  =  useForm({
+        defaultValues : async () => {
+           const response = await axios.get('https://jsonplaceholder.typicode.com/users/3')
+           const data = await response.data
+
+            return {
+                username : 'kafi Ahmed',
+                email : data.email,
+                chanel : 'codewar',
+                social : {
+                    twitter : '',
+                    facebook : ''
+                }
+
+            }
+        }
+     })
      const {register, control, handleSubmit, formState} = form;
 
      const {errors} = formState
@@ -64,6 +81,16 @@ const Youtubeforms = () => {
                     }
                 })} />
                 <p>{errors.chanel?.message}</p>
+                </Stack>
+
+                <Stack>
+                    <label htmlFor="twitter" id="twitter" />
+                    <input type="text" id="twitterInput" {...register('social.twitter')} />
+                </Stack>
+
+                <Stack>
+                    <label htmlFor="facebook" id="facebook" />
+                    <input type="text" id="facebookInput" {...register('social.facebook')} />
                 </Stack>
 
                 <button type="submit">Submit</button>
