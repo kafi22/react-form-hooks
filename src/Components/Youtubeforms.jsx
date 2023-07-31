@@ -9,7 +9,9 @@ import {DevTool} from "@hookform/devtools"
 const Youtubeforms = () => {
 
      const form  =  useForm()
-     const {register, control, handleSubmit} = form;
+     const {register, control, handleSubmit, formState} = form;
+
+     const {errors} = formState
 
      const formSubmit = (data) => {
 
@@ -22,15 +24,47 @@ const Youtubeforms = () => {
             <Typography variant="h3" color='secondary'>React Hook Forms </Typography>
 
             <Stack display='flex' flexDirection='column'>
-            <form onSubmit={handleSubmit(formSubmit)} style={{display : 'flex', flexDirection : 'column', margin : '3rem 0'}}>
+            <form noValidate onSubmit={handleSubmit(formSubmit)} style={{display : 'flex', flexDirection : 'column', margin : '3rem 0'}}>
+                
+                <Stack>
                 <label htmlFor="username">User Name</label>
 
-                <input type="text" id="usernames" {...register("username")} />
-                <label htmlFor="email">Email</label>
-                <input type="email" id="email" {...register("email")} />
+                <input type="text" id="usernames" {...register("username", {
+                    required : {
+                        value : true,
+                        message : 'username is required'
+                    }
+                })}  />
+                <p>{errors.username?.message}</p>
+                </Stack>
 
+
+                
+                <Stack>
+                <label htmlFor="email">Email</label>
+                <input type="email" id="email" {...register("email", {
+                    required : {
+                        value : 
+                        /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                        message : 'invalid email format'
+
+                    }
+                })} />
+                <p>{errors.email?.message}</p>
+                </Stack>
+
+
+
+                <Stack>
                 <label htmlFor="chanel">Chanel</label>
-                <input type="text" id="chanel" {...register("chanel")} />
+                <input type="text" id="chanel" {...register("chanel", {
+                    required : {
+                        value : true,
+                        message : 'chanel name is required'
+                    }
+                })} />
+                <p>{errors.chanel?.message}</p>
+                </Stack>
 
                 <button type="submit">Submit</button>
             </form>
